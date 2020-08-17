@@ -1,5 +1,6 @@
  const express = require('express');
  const app = express();
+ const morgan = require('morgan');
  const { Pool } = require('pg')
 
  let allowCrossDomain = function(req, res, next) {
@@ -10,6 +11,7 @@
   
 
 //middlewares
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(allowCrossDomain);
