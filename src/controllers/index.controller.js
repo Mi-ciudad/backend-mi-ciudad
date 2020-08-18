@@ -29,16 +29,49 @@ const createUser = async (req, res) => {
   });
 };
 
-
-
 const getReport = async (req,res) => {
   const response = await pool.query("SELECT * FROM reportes");
   console.log(response.rows);
   res.json(response.rows);
 }
 
+const createReport = async (req, res) => {
+  const { id, descripcion, estado, imagen, direccion } = req.body;
+  const response = await pool.query(
+    "INSERT INTO reportes (id,descripcion,estado,imagen,direccion) VALUES($1,$2,$3,$4,$5)",
+    [id, descripcion, estado, imagen, direccion]
+  );
+  res.json({
+    body: {
+      reporte: { id, descripcion, estado, imagen, direccion },
+    },
+  });
+};
+
+const updateStateReport = async (req, res) => {
+  const id = req.params.id;
+  const { estado } = req.body;
+  const response = await pool.query('UPDATE reportes SET estado = $1 WHERE id = $2', [
+    estado,
+    id
+  ]);
+  console.log(response);
+  res.json('Report updated')
+}
+
+const deleteReport = async (req, res) => {
+  const id = req.params.id;
+  const response = await pool.query('DELETE FROM reportes WHERE id = $1', [id]);
+  console.log(response);
+  res.json(`Report ${id} deleted successfully`);
+}
+
+
 module.exports = {
   getUsers,
   createUser,
-  getReport
+  getReport,
+  createReport,
+  updateStateReport,
+  deleteReport
 };
