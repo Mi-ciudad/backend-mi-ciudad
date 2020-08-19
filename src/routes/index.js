@@ -3,13 +3,13 @@ const router = Router();
 
 const { getUsers, createUser, getReport, createReport, updateStateReport, deleteReport } = require('../controllers/index.controller');
 
-router.get('/users/getUsers', getUsers);
-router.post('/users/createUser', createUser);
+router.get('/users', getUsers);
+router.post('/users', createUser);
 
-router.get('/report/getReports', getReport);
-router.post('/report/createReport', createReport);
-router.put('/report/putReport'. updateStateReport);
-router.delete('/report/deleteReports', deleteReport);
+router.get('/reports', getReport);
+router.post('/reports', createReport);
+router.put('/reports/:id'. updateStateReport);
+router.delete('/reports/:id', deleteReport);
 
 
 
