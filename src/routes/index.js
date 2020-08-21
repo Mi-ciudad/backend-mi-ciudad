@@ -4,11 +4,14 @@ const router = Router();
 const { getUsers, createUser, getReport } = require('../controllers/index.controller');
 
 
-router.get('/users/getUsers', getUsers);
-router.post('/users/createUser', createUser)
+router.get('/users', getUsers);
+router.post('/users', createUser);
 
-router.get('/report/getReports', getReport);
-router.post('/report/createReport',)
+router.get('/reports', getReport);
+router.post('/reports', createReport);
+router.put('/reports/:id'. updateStateReport);
+router.delete('/reports/:id', deleteReport);
+
 
 
 module.exports = router;
