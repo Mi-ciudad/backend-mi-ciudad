@@ -34,7 +34,7 @@ const getReport = async (req, res) => {
 const createReport = async (req, res) => {
     const { descripcion, estado, imagen, direccion } = req.body;
     const result = await pool.query(
-        "INSERT INTO reportes (descripcion,estado,imagen,direccion) VALUES($1,$2,$3,$4)",,
+        "INSERT INTO reportes (descripcion,estado,imagen,direccion) VALUES($1,$2,$3,$4)",
         [id, descripcion, estado, imagen, direccion]
     );
     return res.status(201).json({
