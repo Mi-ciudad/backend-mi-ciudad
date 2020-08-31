@@ -1,6 +1,6 @@
  const express = require('express');
  const app = express();
- const { Pool } = require('pg')
+ const { Pool } = require('pg');
 
  let allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', "*");
@@ -19,10 +19,8 @@ app.use(allowCrossDomain);
 app.use(require('./src/routes/index'));
 
  app.get('/', (req , res ) => {
-     res.send("Pagina del backend MI CIUDAD")
+     res.send("<h1>Pagina del backend MI CIUDAD<h1>")
  })
-
- 
 
  app.listen(5000,() => {
      console.log("SERVER ON PORT = 5000")
