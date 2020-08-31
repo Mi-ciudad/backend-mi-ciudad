@@ -9,14 +9,19 @@ const pool = new Pool({
 
 const getUsers = async (req, res) => {
   const response = await pool.query("SELECT * FROM usuarios");
-  res.json(response.rows);
+  res.json({
+    body: {
+      usuario: { telefono }
+    }
+  });
 };
 
 //cambiar parametros y cosas
 const createReport = async (req, res) => {
   const { tel, email, passwd, ci, nombre, apellido, tipoUsuario } = req.body;
   const response = await pool.query(
-    "INSERT INTO reportes (tel,email,passwd,ci,nombre,apellido,tipoUsuario) VALUES($1,$2,$3,$4,$5,$6,$7)",[tel, email, passwd, ci, nombre, apellido, tipoUsuario]
+    "INSERT INTO reportes (tel,email,passwd,ci,nombre,apellido,tipoUsuario) VALUES($1,$2,$3,$4,$5,$6,$7)",
+    [tel, email, passwd, ci, nombre, apellido, tipoUsuario]
   );
   res.json({
     body: {
