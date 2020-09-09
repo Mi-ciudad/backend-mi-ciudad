@@ -1,16 +1,19 @@
 const { Router } = require("express");
 const router = Router();
 
-const {getUsers,createReport,getReport,login} = require("../controllers/index.controller");
 
-router.get("/users/login",login)
-router.get('/users', getUsers);
-router.post('/users', createUser);
+const {indexController} = require( '../controllers/index.controller');
+const {getReport,createReport,deleteReport,updateStateReport} = require ('../controllers/report.controller')
 
-router.get('/reports', getReport);
-router.post('/reports', createReport);
-router.put('/reports/:id'. updateStateReport);
-router.delete('/reports/:id', deleteReport);
+router.get("/users/login",indexController.login)
+router.get('/users', indexController.getUsers);
+//router.post('/users',);
 
+router.get('/reports', indexController.getReport);
+router.post('/reports', getReport);
+//router.put('/reports/:id'. updateStateReport);
+//router.delete('/reports/:id', deleteReport);
+
+router.post('/register/signUp', indexController.register);
 
 module.exports = router;
