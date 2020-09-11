@@ -88,6 +88,23 @@ const deleteReport = async (req, res) => {
         }
     });
 };
+ const history =  async (req, res) => {
+    try {
+      const { ci } = req.body;
+      const response = await pool.query(
+        "select * from reportes r inner join usuarios u on r.ci = ci and u.ci = ci",
+        [ci]
+      );
+      console.log(response.rows);
+      res.json(response.rows);
+    } catch (error) {
+      res.send({
+        status: 403,
+        statusMessage: "Internal Error",
+        message: "Error al traer reportes para historial"
+      });
+    }
+  };
 
 module.exports = {
     getReport,

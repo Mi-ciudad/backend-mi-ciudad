@@ -1,5 +1,6 @@
 const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
+const { query } = require("express");
 
 const pool = new Pool({
   host: "localhost",
@@ -29,7 +30,7 @@ const indexController = new (class IndexController {
   async register(req, res) {
     try {
       const user = req.body;
-    await bcrypt
+      await bcrypt
         .hash(user.passwd, 8)
         .then((hashedPassword) => {
           user.passwd = hashedPassword;
@@ -59,51 +60,31 @@ const indexController = new (class IndexController {
     };
   };
 
-  async getReport(req, res) {
-    try {
-      const response = await pool.query("select * from reportes");
-      console.log(response.rows);
-      res.json(response.rows);
-
-    } catch (error) {
-      res.send({
-        status: 403,
-        statusMessage: "Internal Error",
-        message: "Error al traer reportes"
-      });
-    }
-  };
-
-  async history(req, res) {
-
-    try {
-      const { ci } = req.body;
-      const response = await pool.query(
-        "select * from reportes r inner join usuarios u on r.ci = ci and u.ci = ci",
-        [ci]
-      );
-      console.log(response.rows);
-      res.json(response.rows);
-    } catch (error) {
-      res.send({
-        status: 403,
-        statusMessage: "Internal Error",
-        message: "Error al traer reportes para historial"
-      });
-    }
-  };
-
   async login(req, res) {
-
     try {
-      const { email, passwd } = req.body;
-      const response = await pool.query(
-        "SELECT * FROM usuarios where email = $1 and passwd = $2",
-        [email, passwd]
-      );
-      console.log(response.rows);
-      res.send(response.rows);
+      const user = req.body;
+
+      const response = await pool.query(`SELECT * FROM usuarios WHERE email = '${user.email}'`);
+
+      if (response.rowCount == 1 && response.rows[0]) {
+        const x =
+          await bcrypt.compare(user.passwd, response.rows[0].passwd)
+            .then((result) => result)
+            .catch("Tu vieja se masturba");
+
+        if (x) {
+          res.send({
+            status: 203,
+            statusMessage: "ACA",
+            message: "ANDUVIO",
+            data: x
+          });
+        }else throw Error();
+
+      } else if (response.rowCount == 0) throw Error()
+
     } catch (error) {
+      console.log(error)
       res.send({
         status: 403,
         statusMessage: "Internal Error",
@@ -112,33 +93,10 @@ const indexController = new (class IndexController {
     }
   };
 
-  async comparePassword (req, res){
 
-    try {
-      const { email } = req.body;
-    const response = await pool.query(
-      "SELECT passwd from usuarios WHERE email = $1",
-      [email]
-    );
-    if (response.rows == 0) {
-      console.log("No datos en la base");
-    } else {
-      console.log("Hay datos en la base");
-      console.log(response.rows);
-      bcrypt.compare();
-    }
-    } catch (error) {
-      res.send({
-        status: 403,
-        statusMessage: "Internal Error",
-        message: "Error en la comparacion de password"
-      });
-    }
 
-  };
-  
 });
-module.exports={
+module.exports = {
   indexController
 }
-  
+

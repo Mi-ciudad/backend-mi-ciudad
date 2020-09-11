@@ -5,7 +5,7 @@ const router = Router();
 const {indexController} = require( '../controllers/index.controller');
 const {getReport,createReport,deleteReport,updateStateReport} = require ('../controllers/report.controller')
 
-router.get("/users/login",indexController.login)
+router.post("/users/login",indexController.login)
 router.get('/users', indexController.getUsers);
 //router.post('/users',);
 
