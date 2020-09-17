@@ -1,4 +1,6 @@
 const { Pool } = require("pg");
+const bcrypt = require("bcrypt");
+const { query } = require("express");
 
 const pool = new Pool({
   host: "localhost",
@@ -7,60 +9,110 @@ const pool = new Pool({
   database: "miCiudad2"
 });
 
-const getUsers = async (req, res) => {
-  const response = await pool.query("SELECT * FROM usuarios");
-  res.json({
-    body: {
-      usuario: { telefono }
+const indexController = new (class IndexController {
+  async getUsers(req, res) {
+    try {
+      const response = await pool.query("SELECT * FROM usuarios");
+      res.json({
+        body: {
+          usuario: { telefono },
+        },
+      });
+    } catch (error) {
+      res.send({
+        status: 403,
+        statusMessage: "Internal Error",
+        message: "Error al traer usuarios"
+      });
     }
-  });
-};
+  }
 
-//cambiar parametros y cosas
-const createReport = async (req, res) => {
-  const { tel, email, passwd, ci, nombre, apellido, tipoUsuario } = req.body;
-  const response = await pool.query(
-    "INSERT INTO reportes (tel,email,passwd,ci,nombre,apellido,tipoUsuario) VALUES($1,$2,$3,$4,$5,$6,$7)",
-    [tel, email, passwd, ci, nombre, apellido, tipoUsuario]
-  );
-  res.json({
-    body: {
-      usuario: { tel, email, passwd, ci, nombre, apellido, tipoUsuario },
-    },
-  });
-};
+  async register(req, res) {
+    try {
+      const user = req.body;
+      await bcrypt
+        .hash(user.passwd, 8)
+        .then((hashedPassword) => {
+          user.passwd = hashedPassword;
+        })
+        .catch(function (error) {
+          console.log("Error saving user: " + error);
+          next();
+        });
 
-const getReport = async (req,res) => {
-  const response = await pool.query("select * from reportes");
-  console.log(response.rows);
-  res.json(response.rows);
-}
+      const response = await pool.query(
+        `INSERT INTO usuarios(email,passwd,ci,nombre,apellido,tipoUsuario) VALUES('${user.email}','${user.passwd}',${user.ci},'${user.nombre}','${user.apellido}','${user.tipoUsuario}')`
+      );
 
-const history = async (req,res) => {
-  const {ci} = req.body
-  const response = await pool.query("select * from reportes r inner join usuarios u on r.ci = ci and u.ci = ci", [ci]);
-  console.log(response.rows);
-  res.json(response.rows);
-}
+      if (response.rowCount === 1) {
+        res.send({
+          status: 200,
+          message: "anduvio",
+          data: user,
+        });
+      }
+    } catch (error) {
+      res.send({
+        status: 403,
+        statusMessage: "Internal Error",
+        message: "Error al registrar usuario"
+      });
+    };
+  };
 
-const login = async (req,res) => {
-  const {email,passwd} = req.body;
-  const response = await pool.query("SELECT * FROM usuarios where email = $1 and passwd = $2" ,[email,passwd])
-  console.log(response.rows)
-  res.send(response.rows);
-}
+  async login(req, res) {
+    try {
+      const user = req.body;
 
-const register = async (req,res) => {
-  const {tel,email,passwd,ci,nombre,apellido,tipoUsuario} = req.body;
-  const response = await pool.query("INSERT INTO usuarios(tel,email,passwd,ci,nombre,apellido,tipoUsuario) VALUES($1,$2,$3,$4,$5,$6,$7)",[tel,email,passwd,ci,nombre,apellido,tipoUsuario]);
-  console.log(response.rows)
-}
+      const response = await pool.query(`SELECT * FROM usuarios WHERE email = '${user.email}'`);
+
+      if (response.rowCount == 1 && response.rows[0]) {
+        const x =
+          await bcrypt.compare(user.passwd, response.rows[0].passwd)
+            .then((result) => result)
+            .catch("Error comparando passwords");
+
+        if (x) {
+          res.send({
+            status: 203,
+            statusMessage: "ACA",
+            message: "ANDUVIO",
+            data: x
+          });
+        }else throw Error();
+
+      } else if (response.rowCount == 0) throw Error()
+
+    } catch (error) {
+      console.log(error)
+      res.send({
+        status: 403,
+        statusMessage: "Internal Error",
+        message: "Error en el logueo"
+      });
+    }
+  };
+
+  async updateUser (req,res){
+    try {
+      const user = req.body;
+
+      const response = `UPDATE from usuarios set email= '${user.email}', passwd = '${user.passwd}', direc = '${user.direc}'`
+
+      
+    } catch (error) {
+      res.send({
+        status: 403,
+        statusMessage: "Internal Error",
+        message: "Error en el logueo"
+      });
+    }
+  }
+
+
+});
 
 module.exports = {
-  getUsers,
-  createReport,
-  getReport,
-  login,
-  history,
-  register
-};
+  indexController
+}
+
