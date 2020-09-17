@@ -70,7 +70,7 @@ const indexController = new (class IndexController {
         const x =
           await bcrypt.compare(user.passwd, response.rows[0].passwd)
             .then((result) => result)
-            .catch("Tu vieja se masturba");
+            .catch("Error comparando passwords");
 
         if (x) {
           res.send({
@@ -93,9 +93,25 @@ const indexController = new (class IndexController {
     }
   };
 
+  async updateUser (req,res){
+    try {
+      const user = req.body;
+
+      const response = `UPDATE from usuarios set email= '${user.email}', passwd = '${user.passwd}', direc = '${user.direc}'`
+
+      
+    } catch (error) {
+      res.send({
+        status: 403,
+        statusMessage: "Internal Error",
+        message: "Error en el logueo"
+      });
+    }
+  }
 
 
 });
+
 module.exports = {
   indexController
 }
