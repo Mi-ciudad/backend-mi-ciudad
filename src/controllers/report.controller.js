@@ -89,7 +89,7 @@ const reportController = new (class ReportController {
             }
         });
     };
-    
+    qq
     async history(req, res) {
         try {
             const { ci } = req.body;
