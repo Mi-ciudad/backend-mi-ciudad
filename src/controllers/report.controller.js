@@ -3,7 +3,7 @@ const { Pool } = require("pg");
 const pool = new Pool({
     host: "localhost",
     user: "postgres",
-    password: "root",
+    password: "password",
     database: "miCiudad2",
 });
 
@@ -33,22 +33,35 @@ const reportController = new (class ReportController {
     };
 
     async createReport(req, res) {
-        const { descripcion, estado, imagen, direccion } = req.body;
-        const result = await pool.query(
-            "INSERT INTO reportes (descripcion,estado,imagen,direccion) VALUES($1,$2,$3,$4)",
-            [id, descripcion, estado, imagen, direccion]
-        );
-        return res.status(201).json({
-            data: {
-                report: {
-                    id: query_result.rows[0].id,
-                    descripcion: query_result.rows[0].descripcion,
-                    estado: query_result.rows[0].estado,
-                    imagen: query_result.rows[0].imagen,
-                    direccion: query_result.rows[0].direccion
-                }
-            }
-        });
+    
+        try {
+        const user = req.body;
+        const response = await pool.query(`INSERT INTO reportes (descripcion,direccion,estado,ci) VALUES('${user.description}','${user.direction}','${user.state}',${user.ci})`);
+
+        if(response.rowCount === 1) {
+
+            return res.send({
+                status: 201,
+                message : "Reporte creado",
+                data: user
+            });
+        }
+        } catch (error) {
+            console.log(error);
+            console.log(response.rows);
+            return res.send({
+                status: 400,
+                message : "Reporte no creado",
+                data: user
+            });
+            
+        }
+
+
+
+
+
+
     };
 
     async updateStateReport(req, res) {
@@ -89,7 +102,7 @@ const reportController = new (class ReportController {
             }
         });
     };
-    
+    qq
     async history(req, res) {
         try {
             const { ci } = req.body;
