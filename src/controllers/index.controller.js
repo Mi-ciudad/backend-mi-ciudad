@@ -5,12 +5,13 @@ const { query } = require("express");
 const pool = new Pool({
   host: "localhost",
   user: "postgres",
-  password: "root",
+  password: "password",
   database: "miCiudad2"
 });
 
 const indexController = new (class IndexController {
   async getUsers(req, res) {
+    
     try {
       const response = await pool.query("SELECT * FROM usuarios");
       res.json({
@@ -52,6 +53,9 @@ const indexController = new (class IndexController {
         });
       }
     } catch (error) {
+      console.log(error)
+      console.log(response.rows)
+
       res.send({
         status: 403,
         statusMessage: "Internal Error",
@@ -74,7 +78,7 @@ const indexController = new (class IndexController {
 
         if (x) {
           res.send({
-            status: 203,
+            status: 200,
             statusMessage: "ACA",
             message: "ANDUVIO",
             data: x
