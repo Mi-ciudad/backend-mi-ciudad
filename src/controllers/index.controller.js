@@ -45,8 +45,6 @@ const indexController = new (class IndexController {
         `INSERT INTO usuarios(email,passwd,ci,nombre,apellido,tipoUsuario) VALUES('${user.email}','${user.passwd}',${user.ci},'${user.nombre}','${user.apellido}','${user.tipoUsuario}')`
       );
 
-     
-
       if (response.rowCount === 1) {
         res.send({
           status: 200,
