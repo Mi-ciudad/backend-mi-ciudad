@@ -3,7 +3,7 @@ const { Pool } = require("pg");
 const pool = new Pool({
     host: "localhost",
     user: "postgres",
-    password: "password",
+    password: "root",
     database: "miCiudad2",
 });
 
@@ -31,6 +31,33 @@ const reportController = new (class ReportController {
             });
         }
     };
+
+
+    async getCi(req,res){
+        try {
+            const user = req.body;
+            const response = await pool.query(`SELECT ci from usuarios WHERE email = '${user.email}' `)
+
+            if(response.rowCount === 1){
+                return res.send({
+                    status: 201,
+                    ci: `${response.rows[0].ci}`,
+                    data: user
+                });
+            }
+
+
+        } catch (error) {
+            console.log(error)
+           //console.log(response.rows)
+            return res.send({
+                status: 400,
+                message : "Cedula no encontrada/ Error en pasaje de cedula",
+                data: user
+            });
+        }
+    }
+
 
     async createReport(req, res) {
     

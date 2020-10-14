@@ -5,7 +5,7 @@ const { query } = require("express");
 const pool = new Pool({
   host: "localhost",
   user: "postgres",
-  password: "password",
+  password: "root",
   database: "miCiudad2"
 });
 
