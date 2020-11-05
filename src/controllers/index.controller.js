@@ -5,8 +5,8 @@ const { query } = require("express");
 const pool = new Pool({
   host: "localhost",
   user: "postgres",
-  password: "root",
-  database: "miCiudad2"
+  password: "password",
+  database: "miCiudad"
 });
 
 const indexController = new (class IndexController {
@@ -42,7 +42,7 @@ const indexController = new (class IndexController {
         });
 
       const response = await pool.query(
-        `INSERT INTO usuarios(email,passwd,ci,nombre,apellido,tipoUsuario) VALUES('${user.email}','${user.passwd}',${user.ci},'${user.nombre}','${user.apellido}','${user.tipoUsuario}')`
+        `INSERT INTO usuarios(email,password,ci,nombre,apellido,tipoUsuario) VALUES('${user.email}','${user.passwd}',${user.ci},'${user.nombre}','${user.apellido}','${user.tipoUsuario}')`
       );
 
       if (response.rowCount === 1) {
@@ -72,16 +72,19 @@ const indexController = new (class IndexController {
 
       if (response.rowCount == 1 && response.rows[0]) {
         const x =
-          await bcrypt.compare(user.passwd, response.rows[0].passwd)
+          await bcrypt.compare(user.passwd, response.rows[0].password)
             .then((result) => result)
             .catch("Error comparando passwords");
+
+          const {ci, email} = response.rows[0]
 
         if (x) {
           res.send({
             status: 200,
             statusMessage: "ACA",
             message: "ANDUVIO",
-            data: x
+            data: x,
+            body: {ci, email}
           });
         }else throw Error();
 

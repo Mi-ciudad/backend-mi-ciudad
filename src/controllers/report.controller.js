@@ -3,28 +3,21 @@ const { Pool } = require("pg");
 const pool = new Pool({
     host: "localhost",
     user: "postgres",
-    password: "root",
-    database: "miCiudad2",
+    password: "password",
+    database: "miCiudad",
 });
 
 const reportController = new (class ReportController {
+   
     async getReport(req, res) {
         try {
-            const result = await pool.query("SELECT * FROM reportes");
-            return res.status(200).json({
-                data: {
-                    reportes: result.rows.map(r => (
-                        {
-                            id: r.id,
-                            descripcion: r.descripcion,
-                            estado: r.estado,
-                            imagen: r.imagen,
-                            direccion: r.direccion
-                        }
-                    ))
-                }
+            const response = await pool.query("SELECT * FROM reportes");
+            return res.json({
+                status: res.statuCode,
+                data: response.rows
             });
         } catch (err) {
+            console.log(result.rows)
             return res.status(500).json({
                 status: 500,
                 error: err
@@ -41,11 +34,9 @@ const reportController = new (class ReportController {
             if(response.rowCount === 1){
                 return res.send({
                     status: 201,
-                    ci: `${response.rows[0].ci}`,
-                    data: user
-                });
+                    data: response.rows[0]
+                }), console.log(response.rows[0]);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
             }
-
 
         } catch (error) {
             console.log(error)
@@ -54,19 +45,20 @@ const reportController = new (class ReportController {
                 status: 400,
                 message : "Cedula no encontrada/ Error en pasaje de cedula",
                 data: user
-            });
+            }), console.log(response.rows);
         }
     }
 
 
     async createReport(req, res) {
-    
         try {
+            
         const user = req.body;
+        console.log(user)
         const response = await pool.query(`INSERT INTO reportes (descripcion,direccion,estado,ci) VALUES('${user.description}','${user.direction}','${user.state}',${user.ci})`);
-
+        console.log(response.rows)
+        
         if(response.rowCount === 1) {
-
             return res.send({
                 status: 201,
                 message : "Reporte creado",
@@ -75,20 +67,12 @@ const reportController = new (class ReportController {
         }
         } catch (error) {
             console.log(error);
-            console.log(response.rows);
             return res.send({
                 status: 400,
-                message : "Reporte no creado",
-                data: user
+                message : "Reporte no creado"
             });
             
         }
-
-
-
-
-
-
     };
 
     async updateStateReport(req, res) {
