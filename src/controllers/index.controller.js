@@ -16,26 +16,6 @@ const getUsers = async (req, res) => {
   });
 };
 
-//cambiar parametros y cosas
-const createReport = async (req, res) => {
-  const { tel, email, passwd, ci, nombre, apellido, tipoUsuario } = req.body;
-  const response = await pool.query(
-    "INSERT INTO reportes (tel,email,passwd,ci,nombre,apellido,tipoUsuario) VALUES($1,$2,$3,$4,$5,$6,$7)",
-    [tel, email, passwd, ci, nombre, apellido, tipoUsuario]
-  );
-  res.json({
-    body: {
-      usuario: { tel, email, passwd, ci, nombre, apellido, tipoUsuario },
-    },
-  });
-};
-
-const getReport = async (req,res) => {
-  const response = await pool.query("select * from reportes");
-  console.log(response.rows);
-  res.json(response.rows);
-}
-
 const history = async (req,res) => {
   const {ci} = req.body
   const response = await pool.query("select * from reportes r inner join usuarios u on r.ci = ci and u.ci = ci", [ci]);
@@ -58,8 +38,6 @@ const register = async (req,res) => {
 
 module.exports = {
   getUsers,
-  createReport,
-  getReport,
   login,
   history,
   register
