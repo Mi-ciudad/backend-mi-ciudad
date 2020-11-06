@@ -1,12 +1,15 @@
 const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 const { query } = require("express");
+const jwtService = require("../services/jwt");
+const jwt = require("../services/jwt");
+
 
 const pool = new Pool({
   host: "localhost",
   user: "postgres",
   password: "password",
-  database: "miCiudad"
+  database: "miCiudad2"
 });
 
 const indexController = new (class IndexController {
@@ -71,21 +74,22 @@ const indexController = new (class IndexController {
       const response = await pool.query(`SELECT * FROM usuarios WHERE email = '${user.email}'`);
 
       if (response.rowCount == 1 && response.rows[0]) {
-        const x =
-          await bcrypt.compare(user.passwd, response.rows[0].password)
+        const x = await bcrypt.compare(user.passwd, response.rows[0].password)
             .then((result) => result)
             .catch("Error comparando passwords");
-
-          const {ci, email} = response.rows[0]
-
+        
+        const ci = response.rows[0].ci;   
+        const email = response.rows[0].email;
+        const token = await jwtService.jwtService.createToken({ci, email}).then(res => res);
+        console.log(ci,email)
         if (x) {
           res.send({
             status: 200,
             statusMessage: "ACA",
             message: "ANDUVIO",
-            data: x,
-            body: {ci, email}
+            token: token
           });
+
         }else throw Error();
 
       } else if (response.rowCount == 0) throw Error()

@@ -18,7 +18,8 @@ router.get('/reports',reportController.getReport);
 router.put('/reports/:id',reportController.updateStateReport);
 router.post('/createReport', reportController.createReport)
 router.delete('/reports/:id',reportController.deleteReport);
-router.post('/ci', reportController.getCi);
+router.post('/history', reportController.history)
+
 
 
 module.exports = router;

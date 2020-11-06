@@ -4,7 +4,7 @@ const pool = new Pool({
     host: "localhost",
     user: "postgres",
     password: "password",
-    database: "miCiudad",
+    database: "miCiudad2",
 });
 
 const reportController = new (class ReportController {
@@ -26,36 +26,11 @@ const reportController = new (class ReportController {
     };
 
 
-    async getCi(req,res){
-        try {
-            const user = req.body;
-            const response = await pool.query(`SELECT ci from usuarios WHERE email = '${user.email}' `)
-
-            if(response.rowCount === 1){
-                return res.send({
-                    status: 201,
-                    data: response.rows[0]
-                }), console.log(response.rows[0]);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-            }
-
-        } catch (error) {
-            console.log(error)
-           //console.log(response.rows)
-            return res.send({
-                status: 400,
-                message : "Cedula no encontrada/ Error en pasaje de cedula",
-                data: user
-            }), console.log(response.rows);
-        }
-    }
-
-
     async createReport(req, res) {
         try {
-            
         const user = req.body;
         console.log(user)
-        const response = await pool.query(`INSERT INTO reportes (descripcion,direccion,estado,ci) VALUES('${user.description}','${user.direction}','${user.state}',${user.ci})`);
+        const response = await pool.query(`INSERT INTO reportes (descripcion,direccion,estado,ci) VALUES('${user.descripcion}','${user.direccion}','${user.estado}',${user.ci})`);
         console.log(response.rows)
         
         if(response.rowCount === 1) {
@@ -116,10 +91,9 @@ const reportController = new (class ReportController {
     qq
     async history(req, res) {
         try {
-            const { ci } = req.body;
+            const user = req.body;
             const response = await pool.query(
-                "select * from reportes r inner join usuarios u on r.ci = ci and u.ci = ci",
-                [ci]
+                `select * from reportes r inner join usuarios u on r.ci = ci and u.ci = ${user.ci}`
             );
             console.log(response.rows);
             res.json(response.rows);
