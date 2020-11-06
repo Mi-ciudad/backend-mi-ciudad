@@ -32,6 +32,22 @@ const reportController = new (class ReportController {
       }
   };
 
+  async namePerson(req, res){
+    try {
+      const result = await pool.query("SELECT nombre FROM usuarios RIGHT JOIN reportes ON usuarios.ci = reportes.ci");
+      return res.json({
+        data: {
+          nombre: user.nombre
+        }
+      })
+    } catch (err) {
+        return res.status(500).json({
+          status: 500,
+          error: err
+        });
+      }  
+  };
+
   async createReport(req, res) {
     try {
       const user = req.body;
