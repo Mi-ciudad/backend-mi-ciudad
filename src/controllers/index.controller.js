@@ -14,7 +14,6 @@ const pool = new Pool({
 
 const indexController = new (class IndexController {
   async getUsers(req, res) {
-    
     try {
       const response = await pool.query("SELECT * FROM usuarios");
       res.json({
@@ -29,7 +28,7 @@ const indexController = new (class IndexController {
         message: "Error al traer usuarios"
       });
     }
-  }
+  } 
 
   async register(req, res) {
     try {
@@ -91,7 +90,6 @@ const indexController = new (class IndexController {
           });
 
         }else throw Error();
-
       } else if (response.rowCount == 0) throw Error()
 
     } catch (error) {
@@ -110,7 +108,6 @@ const indexController = new (class IndexController {
 
       const response = `UPDATE from usuarios set email= '${user.email}', passwd = '${user.passwd}', direc = '${user.direc}'`
 
-      
     } catch (error) {
       res.send({
         status: 403,
@@ -119,11 +116,8 @@ const indexController = new (class IndexController {
       });
     }
   }
-
-
 });
 
 module.exports = {
   indexController
 }
-
