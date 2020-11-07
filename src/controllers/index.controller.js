@@ -8,7 +8,7 @@ const jwt = require("../services/jwt");
 const pool = new Pool({
   host: "localhost",
   user: "postgres",
-  password: "password",
+  password: "root",
   database: "miCiudad2"
 });
 
@@ -79,7 +79,11 @@ const indexController = new (class IndexController {
         
         const ci = response.rows[0].ci;   
         const email = response.rows[0].email;
-        const token = await jwtService.jwtService.createToken({ci, email}).then(res => res);
+        const nombre = response.rows[0].nombre
+        const apellido = response.rows[0].apellido
+
+        const token = await jwtService.jwtService.createToken({ci, email,nombre,apellido}).then(res => res);
+       
         console.log(ci,email)
         if (x) {
           res.send({
