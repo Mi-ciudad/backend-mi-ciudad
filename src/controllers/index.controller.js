@@ -41,7 +41,7 @@ const indexController = new (class IndexController {
         .catch(function (error) {
           console.log("Error saving user: " + error);
           next();
-        });
+        });z
 
       const response = await pool.query(
         `INSERT INTO usuarios(email,password,ci,nombre,apellido,tipoUsuario) VALUES('${user.email}','${user.passwd}',${user.ci},'${user.nombre}','${user.apellido}','${user.tipoUsuario}')`
@@ -79,7 +79,11 @@ const indexController = new (class IndexController {
         
         const ci = response.rows[0].ci;   
         const email = response.rows[0].email;
-        const token = await jwtService.jwtService.createToken({ci, email}).then(res => res);
+        const nombre = response.rows[0].nombre
+        const apellido = response.rows[0].apellido
+
+        const token = await jwtService.jwtService.createToken({ci, email,nombre,apellido}).then(res => res);
+       
         console.log(ci,email)
         if (x) {
           res.send({
