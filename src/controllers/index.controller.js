@@ -8,7 +8,7 @@ const jwt = require("../services/jwt");
 const pool = new Pool({
   host: "localhost",
   user: "postgres",
-  password: "root",
+  password: "password",
   database: "miCiudad2"
 });
 
@@ -41,7 +41,7 @@ const indexController = new (class IndexController {
         .catch(function (error) {
           console.log("Error saving user: " + error);
           next();
-        });
+        });z
 
       const response = await pool.query(
         `INSERT INTO usuarios(email,password,ci,nombre,apellido,tipoUsuario) VALUES('${user.email}','${user.passwd}',${user.ci},'${user.nombre}','${user.apellido}','${user.tipoUsuario}')`
