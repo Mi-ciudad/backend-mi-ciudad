@@ -2,14 +2,14 @@ const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
 const { query } = require("express");
 const jwtService = require("../services/jwt");
-const jwt = require("../services/jwt");
+
 
 
 const pool = new Pool({
-  host: "localhost",
+  host: "10.1.14.80",
   user: "postgres",
   password: "password",
-  database: "miCiudad2"
+  database: "miciudad"
 });
 
 const indexController = new (class IndexController {
@@ -106,20 +106,6 @@ const indexController = new (class IndexController {
     }
   };
 
-  async updateUser (req,res){
-    try {
-      const user = req.body;
-
-      const response = `UPDATE from usuarios set email= '${user.email}', passwd = '${user.passwd}', direc = '${user.direc}'`
-
-    } catch (error) {
-      res.send({
-        status: 403,
-        statusMessage: "Internal Error",
-        message: "Error en el logueo"
-      });
-    }
-  }
 });
 
 module.exports = {
