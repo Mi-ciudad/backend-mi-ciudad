@@ -10,7 +10,7 @@ const {reportController} = require ('../controllers/report.controller')
 router.post("/login",indexController.login)
 router.post('/register', indexController.register);
 router.get('/users', indexController.getUsers);
-
+router.post('/password' , indexController.changePassword)
 
 //Rutas de reportes
 
